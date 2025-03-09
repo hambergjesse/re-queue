@@ -1,72 +1,79 @@
-# RE:Q
+# RE:QUEUE
 
 A browser extension that automatically accepts match queues when they appear on Renown.gg, even when you're not actively on that tab. Built for serious Counter-Strike players who never want to miss a match on the Renown platform.
 
-> **Never Miss a Renown Match. Always In The Game.**
+> **Never miss a queue pop. Always in the game.**
 
 ## About
 
-RE:Q is a community-made project created by Counter-Strike players, for Counter-Strike players. It is specifically designed to work with the Renown.gg platform but is not affiliated with, endorsed by, or officially connected to Renown.gg in any way.
+RE:QUEUE is a community-made project created by Counter-Strike players, for Counter-Strike players. It is specifically designed to work with the Renown.gg platform but is not affiliated with, endorsed by, or officially connected to Renown.gg in any way.
 
 ## Features
 
 - Automatically accepts queue matches on Renown.gg the moment the "Accept" button appears
-- Works seamlessly in the background, even when you're browsing other tabs
+- Works seamlessly in the background, even when you're browsing other tabs or AFK
 - Compatible with all major browsers (Chrome, Firefox, Edge, Opera)
 - Ultra-responsive with both polling and mutation detection
-- Clean, minimal interface with toggle controls
+- Sleek, modern interface with gradient styling and toggle controls
 - Debug mode for advanced users
+
+## Screenshots
+
+### Extension Popup
+![RE:QUEUE Extension Popup](images/popup_preview.png)
+
+### Landing Page
+![RE:QUEUE Landing Page](images/website_preview.png)
 
 ## Installation
 
 ### Chrome
-1. Download or clone this repository to your computer
-2. Open Google Chrome
-3. Navigate to `chrome://extensions/`
-4. Enable "Developer mode" by toggling the switch in the top-right corner
-5. Click "Load unpacked" and select the folder containing the extension files
-6. The RE:Q icon should now appear in your Chrome toolbar
+1. Visit the [Chrome Web Store page](https://chromewebstore.google.com/detail/hdpeiagpjckedimngnejdbnikbbbhbfi/preview) and click "Add to Chrome"
+2. Alternatively, download or clone this repository to your computer
+3. Open Google Chrome
+4. Navigate to `chrome://extensions/`
+5. Enable "Developer mode" by toggling the switch in the top-right corner
+6. Click "Load unpacked" and select the folder containing the extension files
+7. The RE:QUEUE icon should now appear in your Chrome toolbar
 
 ### Firefox
-1. Download or clone this repository to your computer
-2. Open Firefox
-3. Navigate to `about:debugging#/runtime/this-firefox`
-4. Click "Load Temporary Add-on..."
-5. Select the `manifest.json` file from the extension folder
-6. The extension will be installed temporarily (until Firefox is restarted)
-
-For permanent installation in Firefox:
-1. Package the extension as an `.xpi` file
-2. Have it signed by Mozilla through the [Firefox Add-ons Developer Hub](https://addons.mozilla.org/developers/)
-3. After signing, you can install it permanently
+1. Visit the [Firefox Add-ons page](https://addons.mozilla.org/en-GB/firefox/addon/re-queue/) and click "Add to Firefox"
+2. Alternatively, download or clone this repository to your computer
+3. Open Firefox
+4. Navigate to `about:debugging#/runtime/this-firefox`
+5. Click "Load Temporary Add-on..."
+6. Select the `manifest.json` file from the extension folder
+7. The extension will be installed temporarily (until Firefox is restarted)
 
 ### Edge
-1. Download or clone this repository to your computer
-2. Open Microsoft Edge
-3. Navigate to `edge://extensions/`
-4. Turn on "Developer mode" using the toggle in the bottom-left
-5. Click "Load unpacked" and select the extension folder
-6. The RE:Q icon should now appear in your Edge toolbar
+1. Visit the [Edge Add-ons page](https://chromewebstore.google.com/detail/hdpeiagpjckedimngnejdbnikbbbhbfi/preview) and click "Get"
+2. Alternatively, download or clone this repository to your computer
+3. Open Microsoft Edge
+4. Navigate to `edge://extensions/`
+5. Turn on "Developer mode" using the toggle in the bottom-left
+6. Click "Load unpacked" and select the extension folder
+7. The RE:QUEUE icon should now appear in your Edge toolbar
 
 ### Opera
-1. Download or clone this repository to your computer
-2. Open Opera
-3. Navigate to `opera://extensions`
-4. Enable "Developer mode" in the top-right corner
-5. Click "Load unpacked" and select the extension folder
-6. The RE:Q icon should now appear in your Opera toolbar
+1. Visit the [Opera Add-ons page](https://chromewebstore.google.com/detail/hdpeiagpjckedimngnejdbnikbbbhbfi/preview) and click "Add to Opera"
+2. Alternatively, download or clone this repository to your computer
+3. Open Opera
+4. Navigate to `opera://extensions`
+5. Enable "Developer mode" in the top-right corner
+6. Click "Load unpacked" and select the extension folder
+7. The RE:QUEUE icon should now appear in your Opera toolbar
 
 ## Usage
 
-1. Click the RE:Q icon in your browser toolbar to open the control panel
+1. Click the RE:QUEUE icon in your browser toolbar to open the control panel
 2. The extension is enabled by default
 3. Toggle the "Enable Auto Accept" switch to turn the functionality on or off
 4. Receive visual confirmation when the extension is active on Renown.gg tabs
 
 ### Status Indicators
 
-- Green indicator: RE:Q is active and monitoring for queue prompts
-- Red indicator: RE:Q is disabled
+- Green indicator: RE:QUEUE is active and monitoring for queue prompts
+- Red indicator: RE:QUEUE is disabled
 - Domain status: Shows if Renown.gg tabs are detected
 
 ### Debug Mode
@@ -75,12 +82,12 @@ If you encounter issues or want to see what's happening behind the scenes, enabl
 
 ## How It Works
 
-RE:Q operates using advanced techniques to ensure you never miss a match on Renown.gg:
+RE:QUEUE operates using advanced techniques to ensure you never miss a match on Renown.gg:
 
 1. Monitors Renown.gg for the appearance of the "Accept" button in match queues
 2. Uses dual detection methods (mutation observers + polling) for maximum reliability
 3. Automatically clicks the button when it appears, with browser-specific optimizations
-4. Runs efficiently in the background while you focus on other tasks
+4. Runs efficiently in the background while you focus on other tasks or are AFK
 
 ## Permissions
 
@@ -100,7 +107,7 @@ This extension requires the following permissions:
 
 ## Quality Assurance
 
-RE:Q is built with quality and reliability in mind. Our comprehensive testing suite ensures that every feature works correctly across all supported browsers:
+RE:QUEUE is built with quality and reliability in mind. Our comprehensive testing suite ensures that every feature works correctly across all supported browsers:
 
 - **Unit Tests**: Over 90% code coverage for all core functionality
 - **Integration Tests**: Communication between different extension components is thoroughly tested
@@ -119,7 +126,7 @@ For developers looking to contribute, check out the `tests/` directory to unders
 
 ## Troubleshooting
 
-If RE:Q isn't working as expected:
+If RE:QUEUE isn't working as expected:
 
 1. Ensure the extension is enabled (green indicator in the control panel)
 2. Verify you have Renown.gg tabs open
@@ -134,11 +141,13 @@ If RE:Q isn't working as expected:
 
 ## Privacy
 
-RE:Q respects your privacy:
+RE:QUEUE respects your privacy:
 - No data collection or external transmission
 - No analytics or tracking
 - Operates only on Renown.gg website
 - Only interacts with the "Accept" button element
+
+For more details, see [PRIVACY.md](PRIVACY.md).
 
 ## Credits
 
@@ -152,7 +161,7 @@ This project is open-source software.
 
 ### Cross-Browser Development (2025 Best Practices)
 
-RE:Q follows the 2025 best practices for cross-browser extension development:
+RE:QUEUE follows the 2025 best practices for cross-browser extension development:
 
 1. **Browser Extension Polyfill**: Uses Mozilla's [webextension-polyfill](https://github.com/mozilla/webextension-polyfill) for compatibility
 2. **Progressive Feature Enhancement**: Core functionality works across all browsers, with browser-specific features added when available
@@ -163,7 +172,7 @@ RE:Q follows the 2025 best practices for cross-browser extension development:
 ### Project Structure
 
 ```
-re-q/
+re-queue/
 ├── manifest.json        # Extension configuration
 ├── background.js        # Service worker for background processes
 ├── content.js           # Content script that runs on pages
@@ -175,6 +184,9 @@ re-q/
 │   ├── icon48.png
 │   ├── icon128.png
 │   └── icon128_disabled.png
+├── frontend/            # Landing page files
+│   ├── index.html       # Landing page HTML 
+│   └── assets/          # Landing page assets
 ├── tests/               # Comprehensive testing suite
 │   ├── unit/            # Unit tests
 │   ├── integration/     # Integration tests
@@ -222,4 +234,4 @@ This extension is a fan-made tool created for the Renown.gg community. It is not
 
 ---
 
-*RE:Q — The Pro's Queue Companion for Renown.gg*
+*RE:QUEUE — Never miss a queue pop*

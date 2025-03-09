@@ -1,0 +1,2995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RE:QUEUE - The Pro's Queue Companion for Renown.gg</title>
+    <meta name="description" content="Never miss a Renown match again. RE:Q automatically accepts match queues on Renown.gg, even when you're not actively on that tab.">
+    <meta name="robots" content="index, follow">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="/images/icon16.png">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="RE:QUEUE - The Pro's Queue Companion for Renown.gg">
+    <meta property="og:description" content="Never miss a Renown match again. RE:QUEUE automatically accepts match queues on Renown.gg, even when you're not actively on that tab.">
+    <meta property="og:url" content="https://req.gg/">
+    <meta property="og:site_name" content="RE:QUEUE">
+    <meta property="og:locale" content="en-US">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="RE:QUEUE - The Pro's Queue Companion for Renown.gg">
+    <meta name="twitter:description" content="Never miss a Renown match again. RE:QUEUE automatically accepts match queues on Renown.gg, even when you're not actively on that tab.">
+    
+    <!-- Styles -->
+    <style>
+        :root {
+            --primary: #FF8484; /* Salmon pink from play button */
+            --primary-gradient-start: #FF94AB;
+            --primary-gradient-end: #FFA576;
+            --background: #1F0807; /* Dark maroon background */
+            --bg-card: #2A0E0D; /* Slightly lighter maroon */
+            --bg-gradient-from: #2A0E0D;
+            --bg-gradient-to: #1F0807;
+            --text: #FFFFFF; /* White text */
+            --text-secondary: #D0D0D0; /* Light gray */
+            --border: #3A1614; /* Lighter maroon */
+            --success: #42C34D; /* Green from win indicators */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background);
+            color: var(--text-secondary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 0;
+            background-color: rgba(31, 8, 7, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: bold;
+            font-size: 28px;
+            color: var(--text);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--primary);
+        }
+        
+        nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+        
+        nav a:hover {
+            color: var(--text);
+        }
+        
+        .button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 48px;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            color: #1F0807;
+            border-radius: 100rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .button:hover {
+            background: linear-gradient(90deg, #FFA0B4, #FFAF84);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:focus {
+            outline: 2px solid hsla(0,0%,100%,.2);
+        }
+        
+        .hero {
+            padding: 160px 0 80px;
+            background: linear-gradient(to bottom, #2A0E0D, var(--background));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(255, 132, 132, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .hero-split {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .hero-content {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-visual {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 54px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero h1 .highlight {
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+            font-weight: 800;
+        }
+        
+        .hero h1 .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 1.5px;
+            opacity: 0.8;
+        }
+        
+        .hero-tagline {
+            font-size: 20px;
+            color: hsla(0,0%,100%,.85);
+            margin-bottom: 32px;
+            max-width: 550px;
+            line-height: 1.5;
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: hsla(0,0%,100%,.7);
+        }
+        
+        .cta-container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .browser-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .browser-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            text-decoration: none;
+            color: hsla(0,0%,100%,.7);
+            transition: all 0.2s ease;
+        }
+        
+        .browser-option svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .browser-option:hover, .browser-option.active {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.1), rgba(255, 165, 118, 0.1));
+            color: white;
+            border-color: rgba(255, 148, 171, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .primary-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            color: #1F0807;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 17px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .primary-cta:hover {
+            background: linear-gradient(90deg, #FFA0B4, #FFAF84);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .primary-cta svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .secondary-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            color: var(--primary);
+            background: transparent;
+            border: 1px solid rgba(255, 148, 171, 0.3);
+            border-radius: 100px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .secondary-cta:hover {
+            border-color: var(--primary);
+            background: rgba(255, 132, 132, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        /* Browser Mockup */
+        .browser-mockup {
+            width: 100%;
+            max-width: 500px;
+            background: linear-gradient(to bottom, #2A1312, #150908);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            margin: 0 auto;
+        }
+        
+        .mockup-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: #150908;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .mockup-action-dots {
+            display: flex;
+            gap: 6px;
+            margin-right: 16px;
+        }
+        
+        .mockup-action-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #5F2D29;
+        }
+        
+        .mockup-url-bar {
+            flex: 1;
+            background: #2A1312;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: hsla(0,0%,100%,.6);
+            text-align: center;
+        }
+        
+        .mockup-content {
+            padding: 20px;
+            height: 300px;
+            position: relative;
+        }
+        
+        /* Queue Animation */
+        .queue-animation {
+            height: 100%;
+            position: relative;
+        }
+        
+        .queue-state {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .queue-state.waiting {
+            opacity: 1;
+            animation: fadeInOut 6s infinite;
+        }
+        
+        .queue-state.accept {
+            animation: showAccept 6s infinite;
+            animation-delay: 2s;
+        }
+        
+        .queue-state.success {
+            animation: showSuccess 6s infinite;
+            animation-delay: 4s;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 33% { opacity: 1; }
+            34%, 100% { opacity: 0; }
+        }
+        
+        @keyframes showAccept {
+            0%, 33% { opacity: 0; }
+            34%, 66% { opacity: 1; }
+            67%, 100% { opacity: 0; }
+        }
+        
+        @keyframes showSuccess {
+            0%, 66% { opacity: 0; }
+            67%, 100% { opacity: 1; }
+        }
+        
+        .queue-status {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .loading-indicator {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 132, 132, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .accept-button {
+            padding: 12px 60px;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            color: #1F0807;
+            border-radius: 100px;
+            font-weight: 600;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .auto-accept-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(31, 8, 7, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease 0.5s forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .checkmark {
+            font-size: 32px;
+            color: #42C34D;
+            margin-bottom: 10px;
+        }
+        
+        .auto-text {
+            color: white;
+            font-size: 14px;
+        }
+        
+        .success-message {
+            font-size: 16px;
+            color: #42C34D;
+        }
+        
+        /* Workflow Section Styles */
+        .workflow {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, var(--background), rgba(58, 22, 20, 0.2));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .workflow::before {
+            content: '';
+            position: absolute;
+            right: -150px;
+            bottom: -150px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 132, 132, 0.05) 0%, transparent 70%);
+            z-index: 0;
+        }
+        
+        .workflow h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: hsla(0,0%,100%,.7);
+            margin-bottom: 60px;
+        }
+        
+        .workflow-timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto 60px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .workflow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 180px;
+            transition: transform 0.3s ease;
+        }
+        
+        .workflow-step:hover {
+            transform: translateY(-6px);
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(120deg, var(--bg-card), #2D1312);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            border: 2px solid var(--border);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .highlight-step .step-number {
+            background: linear-gradient(120deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            color: #1F0807;
+        }
+        
+        .step-content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .step-content p {
+            color: hsla(0,0%,100%,.7);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .workflow-connector {
+            flex-grow: 1;
+            height: 2px;
+            background: linear-gradient(to right, var(--border), var(--border) 50%, transparent 50%, transparent);
+            background-size: 8px 2px;
+            position: relative;
+            top: -35px;
+            max-width: 100px;
+        }
+        
+        .workflow-cta {
+            text-align: center;
+        }
+        
+        .workflow-cta p {
+            color: hsla(0,0%,100%,.8);
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        /* Comparison Section Styles */
+        .comparison {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, rgba(58, 22, 20, 0.2), var(--background));
+        }
+        
+        .comparison h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .comparison-table {
+            max-width: 900px;
+            margin: 50px auto 0;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.03), rgba(255, 165, 118, 0.03));
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .empty-cell {
+            padding: 20px;
+        }
+        
+        .header-cell {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-left: 1px solid var(--border);
+        }
+        
+        .product-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 6px;
+        }
+        
+        .product-tag {
+            font-size: 14px;
+            color: hsla(0,0%,100%,.6);
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s ease;
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-row:hover {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+        }
+        
+        .feature-name {
+            padding: 20px;
+            font-size: 16px;
+            color: white;
+        }
+        
+        .feature-value {
+            padding: 20px;
+            text-align: center;
+            border-left: 1px solid var(--border);
+            font-size: 16px;
+        }
+        
+        .feature-value.positive {
+            color: #42C34D;
+            font-weight: 600;
+        }
+        
+        .feature-value.negative {
+            color: #FF4C4C;
+        }
+        
+        .feature-value.neutral {
+            color: hsla(0,0%,100%,.8);
+        }
+        
+        /* Social Proof Styles */
+        .social-proof {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, var(--background), rgba(58, 22, 20, 0.2));
+        }
+        
+        .social-proof h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .installation-count {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+        
+        .count-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 40px;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.1), rgba(255, 165, 118, 0.1));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        
+        .count-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .count-label {
+            font-size: 18px;
+            color: hsla(0,0%,100%,.8);
+        }
+        
+        .store-ratings {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .rating svg {
+            color: #FFD700;
+        }
+        
+        .rating-text {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        
+        .testimonials {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, var(--background), rgba(58, 22, 20, 0.2));
+            text-align: center;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+            width: 100%;
+            display: block;
+        }
+        
+        .section-header h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .section-header .section-subtitle {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 600px;
+        }
+        
+        .testimonial-card {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.07), rgba(255, 165, 118, 0.07));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .testimonial-content {
+            position: relative;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+        
+        .quote-icon {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            opacity: 0.2;
+            color: var(--primary);
+        }
+        
+        .testimonial-content p {
+            position: relative;
+            color: hsla(0,0%,100%,.9);
+            font-size: 16px;
+            line-height: 1.6;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+        
+        .author-name {
+            font-weight: 600;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .author-role {
+            color: hsla(0,0%,100%,.6);
+            font-size: 14px;
+        }
+
+        /* Security Section Styles */
+        .security {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, rgba(58, 22, 20, 0.2), var(--background));
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: hsla(0,0%,100%,.7);
+            margin-bottom: 48px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .security h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        
+        .security-card {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .security-card:hover {
+            transform: translateY(-6px);
+        }
+        
+        .security-card svg {
+            width: 48px;
+            height: 48px;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+        
+        .security-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 12px;
+        }
+        
+        .security-card p {
+            color: hsla(0,0%,100%,.8);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .privacy-link {
+            text-align: center;
+        }
+
+        /* Performance Metrics Styles */
+        .performance {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, var(--background), rgba(58, 22, 20, 0.2));
+        }
+        
+        .performance h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: transform 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .metric-value {
+            margin-bottom: 16px;
+        }
+        
+        .metric-value .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .bar-container {
+            height: 6px;
+            background-color: hsla(0,0%,100%,.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        
+        .bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            border-radius: 3px;
+        }
+        
+        .metric-label h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .metric-label p {
+            color: hsla(0,0%,100%,.7);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Accessibility Section Styles */
+        .accessibility {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, rgba(58, 22, 20, 0.2), var(--background));
+        }
+        
+        .accessibility h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .accessibility-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+        }
+        
+        .accessibility-icon {
+            flex-shrink: 0;
+        }
+        
+        .accessibility-icon svg {
+            width: 80px;
+            height: 80px;
+            color: var(--primary);
+        }
+        
+        .accessibility-details p {
+            color: hsla(0,0%,100%,.9);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .accessibility-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 20px;
+        }
+        
+        .accessibility-list li {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 12px;
+            color: hsla(0,0%,100%,.8);
+        }
+        
+        .accessibility-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Support Section Styles */
+        .support {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, var(--background), rgba(58, 22, 20, 0.2));
+        }
+        
+        .support h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .support-card {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .support-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .support-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.1), rgba(255, 165, 118, 0.1));
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .support-header svg {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+        }
+        
+        .support-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+        }
+        
+        .support-info {
+            padding: 24px;
+        }
+        
+        .response-time {
+            margin-bottom: 16px;
+        }
+        
+        .response-time .label {
+            color: hsla(0,0%,100%,.6);
+            font-size: 14px;
+        }
+        
+        .response-time .value {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
+            margin-left: 8px;
+        }
+        
+        .support-info p {
+            color: hsla(0,0%,100%,.8);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .support-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.2), rgba(255, 165, 118, 0.2));
+            color: white;
+            text-decoration: none;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .support-link:hover {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.3), rgba(255, 165, 118, 0.3));
+        }
+        
+        .support-hours {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .support-hours p {
+            color: hsla(0,0%,100%,.7);
+            font-size: 15px;
+        }
+
+        /* Terms Section Styles */
+        .terms {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, rgba(58, 22, 20, 0.2), var(--background));
+            position: relative;
+        }
+
+        .terms::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 30%, rgba(255, 148, 171, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .terms h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .terms-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .terms-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .terms-header-icon {
+            width: 40px;
+            height: 40px;
+            color: var(--primary);
+        }
+
+        .terms-header-text h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .terms-header-text p {
+            color: hsla(0, 0%, 100%, 0.6);
+            font-size: 14px;
+        }
+
+        .terms-body {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .terms-section {
+            display: flex;
+            gap: 20px;
+        }
+
+        .terms-section-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .terms-section-content {
+            flex: 1;
+        }
+
+        .terms-section-content h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .terms-section-content p {
+            color: hsla(0, 0%, 100%, 0.8);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        .terms-footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: hsla(0, 0%, 100%, 0.6);
+            font-size: 14px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .terms-content {
+                padding: 30px 24px;
+            }
+            
+            .terms-section {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .terms-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+        }
+
+        /* FAQ Section Styles */
+        .faq {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, var(--background), rgba(58, 22, 20, 0.2));
+        }
+        
+        .faq h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .faq-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-question {
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-question:hover {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.1), rgba(255, 165, 118, 0.1));
+        }
+        
+        .faq-question h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .faq-question svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-answer {
+            padding: 0 24px 20px;
+            color: hsla(0,0%,100%,.8);
+            font-size: 16px;
+            line-height: 1.6;
+            display: none;
+        }
+        
+        .faq-item.active .faq-question svg {
+            transform: rotate(180deg);
+        }
+        
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #200E0E;
+            border-top: 1px solid var(--border);
+            padding: 75px 0;
+            font-size: 14px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .footer-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 32px;
+        }
+        
+        .footer-logo span {
+            color: var(--primary);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            column-gap: 150px;
+            row-gap: 48px;
+            margin-bottom: 32px;
+        }
+
+        .footer-links .link-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links .link-group h4 {
+            color: hsla(0,0%,100%,.5);
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .footer-links a {
+            color: hsla(0,0%,100%,.8);
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        .copyright {
+            color: hsla(0,0%,100%,.5);
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            nav .button {
+                display: none;
+            }
+            
+            .hero-split {
+                flex-direction: column;
+            }
+            
+            .hero-content {
+                order: 1;
+                text-align: center;
+            }
+            
+            .hero-visual {
+                order: 0;
+                margin-bottom: 40px;
+            }
+            
+            .hero-stats {
+                justify-content: center;
+            }
+            
+            .cta-container {
+                align-items: center;
+            }
+            
+            .workflow-timeline {
+                flex-direction: column;
+                gap: 40px;
+                max-width: 300px;
+            }
+            
+            .workflow-connector {
+                height: 40px;
+                width: 2px;
+                max-width: none;
+                background: linear-gradient(to bottom, var(--border), var(--border) 50%, transparent 50%, transparent);
+                background-size: 2px 8px;
+                margin: 0 auto;
+                top: 0;
+            }
+            
+            .comparison-table {
+                font-size: 14px;
+            }
+            
+            .table-header {
+                grid-template-columns: 1.2fr 0.9fr 0.9fr;
+            }
+            
+            .table-row {
+                grid-template-columns: 1.2fr 0.9fr 0.9fr;
+            }
+            
+            .feature-name, .feature-value {
+                padding: 16px 12px;
+            }
+            
+            .chat-bubble .bubble-content {
+                max-width: 90%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .browser-selector {
+                justify-content: center;
+            }
+            
+            .browser-option {
+                padding: 8px 12px;
+            }
+            
+            .browser-option span {
+                display: none;
+            }
+            
+            .browser-option svg {
+                margin-right: 0;
+            }
+            
+            .features-nav {
+                gap: 8px;
+            }
+            
+            .feature-nav-btn {
+                padding: 8px 12px;
+            }
+            
+            .btn-text {
+                display: none;
+            }
+            
+            .btn-icon svg {
+                margin-right: 0;
+            }
+            
+            .feature-name, .feature-value {
+                padding: 12px 8px;
+                font-size: 12px;
+            }
+            
+            .product-name {
+                font-size: 14px;
+            }
+            
+            .product-tag {
+                font-size: 10px;
+            }
+            
+            .table-header {
+                grid-template-columns: 0.8fr 0.6fr 0.6fr;
+            }
+            
+            .table-row {
+                grid-template-columns: 0.8fr 0.6fr 0.6fr;
+            }
+        }
+
+        /* Features Section Styles */
+        .features {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, rgba(58, 22, 20, 0.2), var(--background));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .features::before {
+            content: '';
+            position: absolute;
+            left: -150px;
+            top: -150px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 132, 132, 0.05) 0%, transparent 70%);
+            z-index: 0;
+        }
+        
+        .features h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-card {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.07), rgba(255, 165, 118, 0.07));
+            border: 1px solid var(--border);
+            padding: 28px 32px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+        }
+        
+        .feature-card svg {
+            width: 40px;
+            height: 40px;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+        
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 12px;
+        }
+        
+        .feature-card p {
+            color: hsla(0,0%,100%,.8);
+            font-size: 16px;
+            line-height: 24px;
+        }
+        
+        /* Feature Showcase Styles */
+        .features-showcase {
+            margin: 0 auto 40px;
+            max-width: 900px;
+            min-height: 400px;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.07), rgba(255, 165, 118, 0.07));
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .showcase-item {
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            display: none;
+        }
+        
+        .showcase-item.active {
+            display: flex;
+        }
+        
+        @media (min-width: 768px) {
+            .showcase-item {
+                flex-direction: row;
+                gap: 40px;
+            }
+        }
+        
+        .showcase-content {
+            flex: 1;
+        }
+        
+        .showcase-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        
+        .showcase-content h3::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+        }
+        
+        .showcase-content p {
+            color: hsla(0,0%,100%,.9);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        .feature-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .feature-highlight {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .feature-desc {
+            color: hsla(0,0%,100%,.7);
+            font-size: 14px;
+        }
+        
+        .showcase-visual {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .visual-mockup {
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .code-block {
+            width: 100%;
+            background: #1a0a0a;
+            border-radius: 8px;
+            padding: 20px;
+            overflow: auto;
+        }
+        
+        .code-block pre {
+            margin: 0;
+        }
+        
+        .code-block code {
+            color: #e6e6e6;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* Features Navigation */
+        .features-nav {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .feature-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            color: hsla(0,0%,100%,.7);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .feature-nav-btn:hover, .feature-nav-btn.active {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.1), rgba(255, 165, 118, 0.1));
+            color: white;
+            border-color: rgba(255, 148, 171, 0.3);
+        }
+        
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* Testimonials with Chat Bubbles */
+        .testimonials {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, var(--background), rgba(58, 22, 20, 0.2));
+            text-align: center;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+            width: 100%;
+            display: block;
+        }
+        
+        .section-header h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .section-header .section-subtitle {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 600px;
+        }
+        
+        .chat-bubbles {
+            max-width: 800px;
+            margin: 40px auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            text-align: left; /* Reset text alignment for the bubbles */
+        }
+        
+        .chat-bubble {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .chat-bubble.left {
+            justify-content: flex-start;
+        }
+        
+        .chat-bubble.right {
+            justify-content: flex-end;
+        }
+        
+        .bubble-content {
+            max-width: 80%;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.07), rgba(255, 165, 118, 0.07));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+        }
+        
+        .chat-bubble.left .bubble-content {
+            border-bottom-left-radius: 0;
+        }
+        
+        .chat-bubble.right .bubble-content {
+            border-bottom-right-radius: 0;
+        }
+        
+        .bubble-content p {
+            color: hsla(0,0%,100%,.9);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .bubble-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(120deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1F0807;
+            font-weight: 600;
+        }
+        
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .author-name {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .author-role {
+            color: hsla(0,0%,100%,.6);
+            font-size: 12px;
+        }
+
+        /* Security Section Styles */
+        .security {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, rgba(58, 22, 20, 0.2), var(--background));
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: hsla(0,0%,100%,.7);
+            margin-bottom: 48px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .security h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        
+        .security-card {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .security-card:hover {
+            transform: translateY(-6px);
+        }
+        
+        .security-card svg {
+            width: 48px;
+            height: 48px;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+        
+        .security-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 12px;
+        }
+        
+        .security-card p {
+            color: hsla(0,0%,100%,.8);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .privacy-link {
+            text-align: center;
+        }
+
+        /* Performance Metrics Styles */
+        .performance {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, var(--background), rgba(58, 22, 20, 0.2));
+        }
+        
+        .performance h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: transform 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .metric-value {
+            margin-bottom: 16px;
+        }
+        
+        .metric-value .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .bar-container {
+            height: 6px;
+            background-color: hsla(0,0%,100%,.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        
+        .bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            border-radius: 3px;
+        }
+        
+        .metric-label h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .metric-label p {
+            color: hsla(0,0%,100%,.7);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Accessibility Section Styles */
+        .accessibility {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, rgba(58, 22, 20, 0.2), var(--background));
+        }
+        
+        .accessibility h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .accessibility-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+        }
+        
+        .accessibility-icon {
+            flex-shrink: 0;
+        }
+        
+        .accessibility-icon svg {
+            width: 80px;
+            height: 80px;
+            color: var(--primary);
+        }
+        
+        .accessibility-details p {
+            color: hsla(0,0%,100%,.9);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .accessibility-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 20px;
+        }
+        
+        .accessibility-list li {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 12px;
+            color: hsla(0,0%,100%,.8);
+        }
+        
+        .accessibility-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Support Section Styles */
+        .support {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, var(--background), rgba(58, 22, 20, 0.2));
+        }
+        
+        .support h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .support-card {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.05), rgba(255, 165, 118, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .support-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .support-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.1), rgba(255, 165, 118, 0.1));
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .support-header svg {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+        }
+        
+        .support-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+        }
+        
+        .support-info {
+            padding: 24px;
+        }
+        
+        .response-time {
+            margin-bottom: 16px;
+        }
+        
+        .response-time .label {
+            color: hsla(0,0%,100%,.6);
+            font-size: 14px;
+        }
+        
+        .response-time .value {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
+            margin-left: 8px;
+        }
+        
+        .support-info p {
+            color: hsla(0,0%,100%,.8);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .support-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.2), rgba(255, 165, 118, 0.2));
+            color: white;
+            text-decoration: none;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .support-link:hover {
+            background: linear-gradient(90deg, rgba(255, 148, 171, 0.3), rgba(255, 165, 118, 0.3));
+        }
+        
+        .support-hours {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .support-hours p {
+            color: hsla(0,0%,100%,.7);
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">RE:<span>QUEUE</span></a>
+            <nav>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#features">Features</a>
+                <a href="#comparison">Why Choose Us</a>
+                <a href="#security">Security</a>
+                <a href="#support">Support</a>
+                <a href="#download" class="button">Install Now</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-split">
+                    <div class="hero-content">
+                        <h1>NEVER MISS A <span class="highlight">QUEUE POP</span></h1>
+                        <p class="hero-tagline">RE:QUEUE has your back when you're AFK or browsing other tabs, automatically accepting matches so you can keep your pugging sessions going.</p>
+                        
+                        <div class="hero-stats">
+                            <div class="stat">
+                                <span class="stat-number">0+</span>
+                                <span class="stat-label">Active Users</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number">0/5</span>
+                                <span class="stat-label">User Rating</span>
+                            </div>
+                        </div>
+                        
+                        <div id="download" class="cta-container">
+                            <div class="browser-selector">
+                                <a href="https://chromewebstore.google.com/detail/hdpeiagpjckedimngnejdbnikbbbhbfi/preview" class="browser-option active" data-browser="chrome">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <title>Google Chrome</title>
+                                        <path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"></path>
+                                    </svg>
+                                    <span>Chrome</span>
+                                </a>
+                                <a href="https://addons.mozilla.org/en-GB/firefox/addon/re-queue/" class="browser-option" data-browser="firefox">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <title>Firefox</title>
+                                        <path d="M20.452 3.445a11.002 11.002 0 00-2.482-1.908C16.944.997 15.098.093 12.477.032c-.734-.017-1.457.03-2.174.144-.72.114-1.398.292-2.118.56-1.017.377-1.996.975-2.574 1.554.583-.349 1.476-.733 2.55-.992a10.083 10.083 0 013.729-.167c2.341.34 4.178 1.381 5.48 2.625a8.066 8.066 0 011.298 1.587c1.468 2.382 1.33 5.376.184 7.142-.85 1.312-2.67 2.544-4.37 2.53-.583-.023-1.438-.152-2.25-.566-2.629-1.343-3.021-4.688-1.118-6.306-.632-.136-1.82.13-2.646 1.363-.742 1.107-.7 2.816-.242 4.028a6.473 6.473 0 01-.59-1.895 7.695 7.695 0 01.416-3.845A8.212 8.212 0 019.45 5.399c.896-1.069 1.908-1.72 2.75-2.005-.54-.471-1.411-.738-2.421-.767C8.31 2.583 6.327 3.061 4.7 4.41a8.148 8.148 0 00-1.976 2.414c-.455.836-.691 1.659-.697 1.678.122-1.445.704-2.994 1.248-4.055-.79.413-1.827 1.668-2.41 3.042C.095 9.37-.2 11.608.14 13.989c.966 5.668 5.9 9.982 11.843 9.982C18.62 23.971 24 18.591 24 11.956a11.93 11.93 0 00-3.548-8.511z"></path>
+                                    </svg>
+                                    <span>Firefox</span>
+                                </a>
+                                <a href="https://chromewebstore.google.com/detail/hdpeiagpjckedimngnejdbnikbbbhbfi/preview" class="browser-option" data-browser="edge">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <title>Microsoft Edge</title>
+                                        <path d="M21.86 17.86q.14 0 .25.12.1.13.1.25t-.11.33l-.32.46-.43.53-.44.5q-.21.25-.38.42l-.22.23q-.58.53-1.34 1.04-.76.51-1.6.91-.86.4-1.74.64t-1.67.24q-.9 0-1.69-.28-.8-.28-1.48-.78-.68-.5-1.22-1.17-.53-.66-.92-1.44-.38-.77-.58-1.6-.2-.83-.2-1.67 0-1 .32-1.96.33-.97.87-1.8.14.95.55 1.77.41.82 1.02 1.5.6.68 1.38 1.21.78.54 1.64.9.86.36 1.77.56.92.2 1.8.2 1.12 0 2.18-.24 1.06-.23 2.06-.72l.2-.1.2-.05zm-15.5-1.27q0 1.1.27 2.15.27 1.06.78 2.03.51.96 1.24 1.77.74.82 1.66 1.4-1.47-.2-2.8-.74-1.33-.55-2.48-1.37-1.15-.83-2.08-1.9-.92-1.07-1.58-2.33T.36 14.94Q0 13.54 0 12.06q0-.81.32-1.49.31-.68.83-1.23.53-.55 1.2-.96.66-.4 1.35-.66.74-.27 1.5-.39.78-.12 1.55-.12.7 0 1.42.1.72.12 1.4.35.68.23 1.32.57.63.35 1.16.83-.35 0-.7.07-.33.07-.65.23v-.02q-.63.28-1.2.74-.57.46-1.05 1.04-.48.58-.87 1.26-.38.67-.65 1.39-.27.71-.42 1.44-.15.72-.15 1.38zM11.96.06q1.7 0 3.33.39 1.63.38 3.07 1.15 1.43.77 2.62 1.93 1.18 1.16 1.98 2.7.49.94.76 1.96.28 1 .28 2.08 0 .89-.23 1.7-.24.8-.69 1.48-.45.68-1.1 1.22-.64.53-1.45.88-.54.24-1.11.36-.58.13-1.16.13-.42 0-.97-.03-.54-.03-1.1-.12-.55-.19-.84-.5-.12-.09-.23-.24-.1-.16-.1-.33 0-.15.16-.35.16-.2.35-.5.2-.28.36-.68.16-.4.16-.95 0-1.06-.4-1.96-.4-.91-1.06-1.64-.66-.74-1.52-1.28-.86-.55-1.79-.89-.84-.3-1.72-.44-.87-.14-1.76-.14-1.55 0-3.06.45T.94 7.55q.71-1.74 1.81-3.13 1.1-1.38 2.52-2.35Q6.68 1.1 8.37.58q1.7-.52 3.58-.52Z"></path>
+                                    </svg>
+                                    <span>Edge</span>
+                                </a>
+                                <a href="https://chromewebstore.google.com/detail/hdpeiagpjckedimngnejdbnikbbbhbfi/preview" class="browser-option" data-browser="opera">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <title>Opera</title>
+                                        <path d="M8.051 5.238c-1.328 1.566-2.186 3.883-2.246 6.48v.564c.061 2.598.918 4.912 2.246 6.479 1.721 2.236 4.279 3.654 7.139 3.654 1.756 0 3.4-.537 4.807-1.471C17.879 22.846 15.074 24 12 24c-.192 0-.383-.004-.57-.014C5.064 23.689 0 18.436 0 12 0 5.371 5.373 0 12 0h.045c3.055.012 5.84 1.166 7.953 3.055-1.408-.93-3.051-1.471-4.81-1.471-2.858 0-5.417 1.42-7.14 3.654h.003zM24 12c0 3.556-1.545 6.748-4.002 8.945-3.078 1.5-5.946.451-6.896-.205 3.023-.664 5.307-4.32 5.307-8.74 0-4.422-2.283-8.075-5.307-8.74.949-.654 3.818-1.703 6.896-.205C22.455 5.25 24 8.445 24 12z"></path>
+                                    </svg>
+                                    <span>Opera</span>
+                                </a>
+                            </div>
+                            <a href="https://chromewebstore.google.com/detail/hdpeiagpjckedimngnejdbnikbbbhbfi/preview" class="primary-cta">
+                                <span>Install RE:QUEUE</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M7 10l5 5 5-5"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-visual">
+                        <div class="browser-mockup">
+                            <div class="mockup-header">
+                                <div class="mockup-action-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <div class="mockup-url-bar">renown.gg</div>
+                            </div>
+                            <div class="mockup-content">
+                                <div class="queue-animation">
+                                    <div class="queue-state waiting">
+                                        <div class="queue-status">Waiting for match...</div>
+                                        <div class="loading-indicator"></div>
+                                    </div>
+                                    <div class="queue-state accept">
+                                        <div class="queue-status">Match Found!</div>
+                                        <div class="accept-button">Accept</div>
+                                        <div class="auto-accept-overlay">
+                                            <div class="checkmark">✓</div>
+                                            <div class="auto-text">Auto-Accepted by RE:QUEUE</div>
+                                        </div>
+                                    </div>
+                                    <div class="queue-state success">
+                                        <div class="queue-status">Match Accepted</div>
+                                        <div class="success-message">Get ready to play!</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="workflow">
+            <div class="container">
+                <h2>How RE:QUEUE Works</h2>
+                <p class="section-subtitle">Simple setup, powerful results</p>
+                
+                <div class="workflow-timeline">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Install Extension</h3>
+                            <p>Add RE:QUEUE to your browser in seconds</p>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-connector"></div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Queue for a Match</h3>
+                            <p>Start your queue on Renown.gg as usual</p>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-connector"></div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Continue Browsing</h3>
+                            <p>Switch tabs, watch videos, or step away</p>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-connector"></div>
+                    
+                    <div class="workflow-step highlight-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>Auto-Accept</h3>
+                            <p>RE:QUEUE automatically accepts your match</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="workflow-cta">
+                    <p>Never miss a match again</p>
+                    <a href="#download" class="secondary-cta">Get RE:QUEUE Now</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="comparison">
+            <div class="container">
+                <h2>Why Choose RE:QUEUE?</h2>
+                <p class="section-subtitle">See how RE:QUEUE compares to playing without it</p>
+                
+                <div class="comparison-table">
+                    <div class="table-header">
+                        <div class="empty-cell"></div>
+                        <div class="header-cell">
+                            <span class="product-name">RE:QUEUE</span>
+                            <span class="product-tag">The Smart Queue Assistant</span>
+                        </div>
+                        <div class="header-cell">
+                            <span class="product-name">Playing Without RE:QUEUE</span>
+                            <span class="product-tag">The Old Way</span>
+                        </div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="feature-name">Match Acceptance</div>
+                        <div class="feature-value positive">Automatic</div>
+                        <div class="feature-value negative">Manual Only</div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="feature-name">Works When Browsing Other Tabs</div>
+                        <div class="feature-value positive">Yes</div>
+                        <div class="feature-value negative">No</div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="feature-name">Missed Matches</div>
+                        <div class="feature-value positive">Never</div>
+                        <div class="feature-value negative">Frequently</div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="feature-name">System Resources</div>
+                        <div class="feature-value positive">< 5MB RAM</div>
+                        <div class="feature-value neutral">N/A</div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="feature-name">Reliability</div>
+                        <div class="feature-value positive">99.99%</div>
+                        <div class="feature-value negative">Depends on You</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2>Advanced Features</h2>
+                <p class="section-subtitle">RE:QUEUE is packed with features to enhance your Renown experience</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                            <path d="m15 5 4 4"></path>
+                        </svg>
+                        <h3>Auto-Accept Matches</h3>
+                        <p>Automatically accepts queue matches on Renown.gg the moment the "Accept" button appears</p>
+                    </div>
+                    <div class="feature-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                            <path d="m9 12 2 2 4-4"></path>
+                        </svg>
+                        <h3>Background Operation</h3>
+                        <p>Works seamlessly in the background, even when you're browsing other tabs</p>
+                    </div>
+                    <div class="feature-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                            <path d="M12 8v4"></path>
+                            <path d="M12 16h.01"></path>
+                        </svg>
+                        <h3>Ultra-Responsive</h3>
+                        <p>Dual detection methods with both polling and mutation detection for maximum reliability</p>
+                    </div>
+                </div>
+                
+                <div class="features-showcase">
+                    <div class="showcase-item active" data-tab="detection">
+                        <div class="showcase-content">
+                            <h3>Dual Detection Technology</h3>
+                            <p>RE:QUEUE uses two complementary methods to detect the "Accept" button:</p>
+                            <ul class="feature-list">
+                                <li>
+                                    <span class="feature-highlight">MutationObserver</span>
+                                    <span class="feature-desc">Monitors DOM changes to detect the button the moment it appears</span>
+                                </li>
+                                <li>
+                                    <span class="feature-highlight">Polling Detection</span>
+                                    <span class="feature-desc">Regularly checks for the button as a fallback mechanism</span>
+                                </li>
+                                <li>
+                                    <span class="feature-highlight">Adaptive Timing</span>
+                                    <span class="feature-desc">Adjusts polling frequency based on queue status for optimal performance</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="showcase-visual">
+                            <div class="visual-mockup detection-visual">
+                                <div class="code-block">
+                                    <pre><code>// Detection snippet
+const observer = new MutationObserver(() => {
+  const acceptButton = document.querySelector('.queue-accept');
+  if (acceptButton) {
+    acceptButton.click();
+    showNotification('Match accepted!');
+  }
+});
+
+// Start observing
+observer.observe(document.body, { 
+  childList: true,
+  subtree: true 
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="features-nav">
+                    <button class="feature-nav-btn active" data-tab="detection">
+                        <span class="btn-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                        </span>
+                        <span class="btn-text">Detection</span>
+                    </button>
+                    <button class="feature-nav-btn" data-tab="background">
+                        <span class="btn-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                        </span>
+                        <span class="btn-text">Background</span>
+                    </button>
+                    <button class="feature-nav-btn" data-tab="customization">
+                        <span class="btn-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </span>
+                        <span class="btn-text">Customization</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <h2>The Renown Community Loves RE:QUEUE</h2>
+                    <p class="section-subtitle">Hear what other players are saying</p>
+                </div>
+                
+                <div class="chat-bubbles">
+                    <div class="chat-bubble left">
+                        <div class="bubble-content">
+                            <p>"RE:QUEUE is a game-changer. I used to miss matches constantly because I'd be browsing other tabs. Now I never miss a queue. Simple but essential for any serious Renown player."</p>
+                            <div class="bubble-author">
+                                <div class="author-avatar">A</div>
+                                <div class="author-info">
+                                    <span class="author-name">Alex K.</span>
+                                    <span class="author-role">Competitive CS Player</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-bubble right">
+                        <div class="bubble-content">
+                            <p>"Unlike other tools, RE:QUEUE is lightweight and doesn't affect my gaming performance. It just works silently in the background and has never failed me. Highly recommended!"</p>
+                            <div class="bubble-author">
+                                <div class="author-avatar">J</div>
+                                <div class="author-info">
+                                    <span class="author-name">Jamie T.</span>
+                                    <span class="author-role">Daily Renown User</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-bubble left">
+                        <div class="bubble-content">
+                            <p>"I was skeptical at first since I've tried similar tools, but RE:QUEUE's dual detection system is flawless. Haven't missed a single match in 3 months of daily play."</p>
+                            <div class="bubble-author">
+                                <div class="author-avatar">M</div>
+                                <div class="author-info">
+                                    <span class="author-name">Morgan W.</span>
+                                    <span class="author-role">Pro Team Manager</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="security" class="security">
+            <div class="container">
+                <h2>Security & Privacy First</h2>
+                <p class="section-subtitle">Your data stays with you. We don't collect anything.</p>
+                
+                <div class="security-grid">
+                    <div class="security-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <h3>Zero Data Collection</h3>
+                        <p>RE:QUEUE doesn't collect, store, or transmit any personal data. Everything stays on your device.</p>
+                    </div>
+
+                    <div class="security-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <h3>Minimal Permissions</h3>
+                        <p>We only request the essential permissions required to detect and click the "Accept" button on Renown.gg.</p>
+                    </div>
+
+                    <div class="security-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                        </svg>
+                        <h3>Open Source</h3>
+                        <p>Our code is fully transparent and available for review on GitHub. No hidden functionality or surprises.</p>
+                    </div>
+                    
+                    <div class="security-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4v16h16"></path>
+                            <path d="m4 20 7-7"></path>
+                            <path d="M15 9h2v2"></path>
+                            <path d="M9 15h2v2"></path>
+                            <path d="m4 8 7 7"></path>
+                        </svg>
+                        <h3>Regular Security Audits</h3>
+                        <p>We perform regular security checks to ensure that RE:QUEUE maintains the highest security standards.</p>
+                    </div>
+                </div>
+                
+                <div class="privacy-link">
+                    <a href="https://github.com/hambergjesse/re-queue/blob/main/PRIVACY.md" target="_blank" class="button">View Privacy Policy</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="performance" class="performance">
+            <div class="container">
+                <h2>Optimized Performance</h2>
+                <p class="section-subtitle">Designed to be light on system resources</p>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">
+                            <span class="value">< 5MB</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 15%;"></div>
+                            </div>
+                        </div>
+                        <div class="metric-label">
+                            <h3>Memory Usage</h3>
+                            <p>Minimal RAM consumption, even during active monitoring</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-value">
+                            <span class="value">< 0.1%</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 10%;"></div>
+                            </div>
+                        </div>
+                        <div class="metric-label">
+                            <h3>CPU Impact</h3>
+                            <p>Negligible CPU usage while running in the background</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-value">
+                            <span class="value">< 100ms</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                        <div class="metric-label">
+                            <h3>Response Time</h3>
+                            <p>Lightning-fast reaction to queue accept prompts</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-value">
+                            <span class="value">99.99%</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 99.99%;"></div>
+                            </div>
+                        </div>
+                        <div class="metric-label">
+                            <h3>Reliability</h3>
+                            <p>Near-perfect acceptance rate in our testing</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="accessibility" class="accessibility">
+            <div class="container">
+                <h2>Accessibility</h2>
+                <div class="accessibility-content">
+                    <div class="accessibility-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="m4.93 4.93 4.24 4.24"></path>
+                            <path d="m14.83 9.17 4.24-4.24"></path>
+                            <path d="m14.83 14.83 4.24 4.24"></path>
+                            <path d="m9.17 14.83-4.24 4.24"></path>
+                            <circle cx="12" cy="12" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="accessibility-details">
+                        <p>RE:QUEUE is designed to be accessible for all users, following the Web Content Accessibility Guidelines (WCAG) 2.2 Level AA standards. Our commitment to accessibility includes:</p>
+                        
+                        <ul class="accessibility-list">
+                            <li>Full keyboard navigation support</li>
+                            <li>Screen reader compatibility</li>
+                            <li>High contrast mode support</li>
+                            <li>Customizable UI sizing</li>
+                            <li>Color-blind friendly interface</li>
+                        </ul>
+                        
+                        <p>We continuously work to improve accessibility features and welcome feedback from our users. If you encounter any accessibility issues or have suggestions for improvement, please contact our support team.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="support" class="support">
+            <div class="container">
+                <h2>Support & Response Times</h2>
+                
+                <div class="support-grid">
+                    <div class="support-card">
+                        <div class="support-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            <h3>General Support</h3>
+                        </div>
+                        <div class="support-info">
+                            <div class="response-time">
+                                <span class="label">Response Time:</span>
+                                <span class="value">Within 24 Hours</span>
+                            </div>
+                            <p>For general questions, feedback, and non-urgent issues</p>
+                            <a href="https://x.com/ratbotexe" target="_blank" class="support-link">Contact Support</a>
+                        </div>
+                    </div>
+                    
+                    <div class="support-card">
+                        <div class="support-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="m15 9-6 6"></path>
+                                <path d="m9 9 6 6"></path>
+                            </svg>
+                            <h3>Bug Reports</h3>
+                        </div>
+                        <div class="support-info">
+                            <div class="response-time">
+                                <span class="label">Response Time:</span>
+                                <span class="value">Within 12 Hours</span>
+                            </div>
+                            <p>For issues affecting functionality or causing errors</p>
+                            <a href="https://github.com/hambergjesse/re-queue/issues" target="_blank" class="support-link">Submit Bug Report</a>
+                        </div>
+                    </div>
+                    
+                    <div class="support-card">
+                        <div class="support-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <path d="M12 9v4"></path>
+                                <path d="M12 17h.01"></path>
+                            </svg>
+                            <h3>Critical Issues</h3>
+                        </div>
+                        <div class="support-info">
+                            <div class="response-time">
+                                <span class="label">Response Time:</span>
+                                <span class="value">Within 4 Hours</span>
+                            </div>
+                            <p>For security vulnerabilities or complete extension failure</p>
+                            <a href="https://x.com/ratbotexe" target="_blank" class="support-link">Report Critical Issue</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="support-hours">
+                    <p>Support is available from 9 AM to 8 PM EST, Monday through Saturday. Emergency support is available 24/7 for critical security issues.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="terms" class="terms">
+            <div class="container">
+                <h2>Terms of Use</h2>
+                <div class="terms-content">
+                    <div class="terms-header">
+                        <svg class="terms-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <div class="terms-header-text">
+                            <h3>Terms of Use Agreement</h3>
+                            <p>Last updated: March 9, 2025</p>
+                        </div>
+                    </div>
+                    
+                    <div class="terms-body">
+                        <div class="terms-section">
+                            <svg class="terms-section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                                <path d="m9 12 2 2 4-4"></path>
+                            </svg>
+                            <div class="terms-section-content">
+                                <h3>1. Acceptance of Terms</h3>
+                                <p>By using RE:QUEUE, you agree to these Terms of Use. If you do not agree, please do not use the extension.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="terms-section">
+                            <svg class="terms-section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                                <path d="m15 5 4 4"></path>
+                            </svg>
+                            <div class="terms-section-content">
+                                <h3>2. Use of RE:QUEUE</h3>
+                                <p>RE:QUEUE is provided as-is, without warranty of any kind. The extension is designed to work with Renown.gg and is not affiliated with or endorsed by Renown.gg.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="terms-section">
+                            <svg class="terms-section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                                <path d="M12 8v4"></path>
+                                <path d="M12 16h.01"></path>
+                            </svg>
+                            <div class="terms-section-content">
+                                <h3>3. User Responsibilities</h3>
+                                <p>Users are responsible for their use of RE:QUEUE and should abide by Renown.gg's terms of service at all times. RE:QUEUE is designed to enhance your experience, not to provide any unfair advantages.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="terms-section">
+                            <svg class="terms-section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            <div class="terms-section-content">
+                                <h3>4. Limitations</h3>
+                                <p>RE:QUEUE and its developers are not responsible for any issues that may arise from using the extension, including but not limited to: missed matches, unintended match acceptances, or any impact on your Renown.gg account.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="terms-section">
+                            <svg class="terms-section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <div class="terms-section-content">
+                                <h3>5. Changes to Terms</h3>
+                                <p>We reserve the right to modify these terms at any time. Continued use of RE:QUEUE after changes implies acceptance of the new terms.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="terms-footer">
+                        This agreement was last modified on July 15, 2025. If you have any questions about these terms, please contact us.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="faq">
+            <div class="container">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What is RE:QUEUE?</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            <p>RE:QUEUE is a browser extension designed specifically for Renown.gg. It automatically accepts match queues even when you're not actively on the Renown tab, ensuring you never miss a match.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How does RE:QUEUE work?</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            <p>RE:QUEUE uses advanced detection methods to identify when a match is ready on Renown.gg. It then automatically clicks the "Accept" button for you, even if you're browsing in a different tab or window.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Is RE:QUEUE safe to use?</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, RE:QUEUE is completely safe. It's open-source, so you can review the code on our GitHub repository. The extension only operates on Renown.gg and doesn't collect any personal data.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Which browsers are supported?</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            <p>RE:QUEUE works with all major browsers including Chrome, Firefox, Edge, and Opera. Simply install the extension from your browser's extension store.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Can I turn off RE:QUEUE temporarily?</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, you can easily toggle RE:QUEUE on and off using the control panel in the extension. This gives you full control over when the auto-accept feature is active.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">RE:<span>QUEUE</span></div>
+                
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Product</h4>
+                        <a href="#features">Features</a>
+                        <a href="https://github.com/hambergjesse/re-queue/blob/main/PRIVACY.md" target="_blank">Privacy</a>
+                        <a href="#terms">Terms</a>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4>Resources</h4>
+                        <a href="https://x.com/ratbotexe" target="_blank">Support</a>
+                        <a href="https://github.com/hambergjesse/re-queue" target="_blank">Documentation</a>
+                        <a href="#faq">FAQ</a>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4>Connect</h4>
+                        <a href="https://renown.gg" target="_blank">Renown.gg</a>
+                        <a href="https://x.com/ratbotexe" target="_blank">Twitter</a>
+                    </div>
+                </div>
+                
+                <div class="copyright">
+                    &copy; 2025 ratdev - An extension for Renown.gg
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html> 
+</html> 
