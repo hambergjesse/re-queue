@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "RE:Q",
+  "name": "RE:QUEUE",
   "version": "1.0.0",
   "description": "Automatically accepts match queues on Renown.gg. Community-made tool, not affiliated with Renown.",
-  "author": "RE:Q Team",
+  "author": "ratdev",
   "icons": {
     "16": "images/icon16.png",
     "48": "images/icon48.png",
@@ -16,7 +16,7 @@
       "48": "images/icon48.png",
       "128": "images/icon128.png"
     },
-    "default_title": "RE:Q"
+    "default_title": "RE:QUEUE"
   },
   "permissions": [
     "storage",

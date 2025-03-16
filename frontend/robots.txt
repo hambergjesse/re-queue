@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://req.gg/sitemap.xml 
+Sitemap: https://re-queue.pages.dev/sitemap.xml 

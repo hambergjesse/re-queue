@@ -25,7 +25,7 @@ If applicable, add screenshots to help explain your problem.
 **Environment (please complete the following information):**
  - Browser [e.g. chrome, firefox]
  - Browser Version [e.g. 120]
- - RE:Q Extension Version [e.g. 1.0.0]
+ - RE:QUEUE Extension Version [e.g. 1.0.0]
 
 **Additional context**
 Add any other context about the problem here.
