@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "RE:Q",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Automatically accepts match queues on Renown.gg. Community-made tool, not affiliated with Renown.",
   "author": "RE:Q Team",
   "icons": {
